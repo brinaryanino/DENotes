@@ -12,11 +12,16 @@ const shortcuts = [
   { keys: ['Ctrl', '2'], description: 'Fokus input tanggal KIA' },
   { keys: ['Ctrl', '3'], description: 'Fokus input tanggal Lab' },
   { keys: ['Ctrl', '4'], description: 'Fokus input tanggal USG' },
+  { keys: ['Ctrl', 'B'], description: 'Tampilkan/sembunyikan sidebar' },
   { keys: ['?'], description: 'Buka/tutup bantuan ini' },
   { keys: ['Esc'], description: 'Tutup dialog' },
 ];
 
-export default function KeyboardShortcutsHelp() {
+interface KeyboardShortcutsHelpProps {
+  onToggleSidebar?: () => void;
+}
+
+export default function KeyboardShortcutsHelp({ onToggleSidebar }: KeyboardShortcutsHelpProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -34,6 +39,12 @@ export default function KeyboardShortcutsHelp() {
         setIsOpen(false);
       }
 
+      // Ctrl+B to toggle sidebar
+      if (e.ctrlKey && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        onToggleSidebar?.();
+      }
+
       // Ctrl+1-4 shortcuts for focusing inputs
       if (e.ctrlKey && ['1', '2', '3', '4'].includes(e.key)) {
         e.preventDefault();
@@ -46,7 +57,7 @@ export default function KeyboardShortcutsHelp() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen]);
+  }, [isOpen, onToggleSidebar]);
 
   if (!isOpen) return null;
 
