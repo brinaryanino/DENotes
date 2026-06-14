@@ -63,12 +63,7 @@ export function countPending(patient: Patient): {
   return { ki, kia, lab, usg, total: ki + kia + lab + usg };
 }
 
-// Helper to format date for display
+// Helper to format date for display (keep YYYY-MM-DD for consistency & easy copy)
 export function formatDate(dateStr: string): string {
-  const date = new Date(dateStr + 'T00:00:00');
-  return date.toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
+  return dateStr;
 }

@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { useAppDispatch } from '@/lib/store';
-import { TestLog, formatDate } from '@/lib/types';
+import { TestLog } from '@/lib/types';
 import DateInput from './DateInput';
+import CopyableDate from './CopyableDate';
 
 interface TestSectionProps {
   patientId: string;
@@ -83,9 +84,10 @@ export default function TestSection({ patientId, testType, tests, inputId }: Tes
                     isPending ? 'bg-white' : 'bg-emerald-50/30'
                   }`}
                 >
-                  <span className={`text-sm ${isPending ? 'font-medium text-slate-700' : 'text-slate-500'}`}>
-                    {formatDate(test.date)}
-                  </span>
+                  <CopyableDate
+                    date={test.date}
+                    className={isPending ? 'font-medium text-slate-700' : 'text-slate-500'}
+                  />
 
                   <div className="flex items-center gap-2">
                     <button

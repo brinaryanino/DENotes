@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { useAppDispatch } from '@/lib/store';
-import { Visit, formatDate } from '@/lib/types';
+import { Visit } from '@/lib/types';
 import DateInput from './DateInput';
+import CopyableDate from './CopyableDate';
 
 interface VisitColumnProps {
   patientId: string;
@@ -92,11 +93,10 @@ export default function VisitColumn({ patientId, column, visits, inputId }: Visi
                     isPending ? 'bg-white' : 'bg-emerald-50/30'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className={`text-sm font-medium ${isPending ? 'text-slate-700' : 'text-slate-500'}`}>
-                      {formatDate(visit.date)}
-                    </span>
-                  </div>
+                  <CopyableDate
+                    date={visit.date}
+                    className={isPending ? 'font-medium text-slate-700' : 'text-slate-500'}
+                  />
 
                   <div className="flex items-center gap-2">
                     <button
