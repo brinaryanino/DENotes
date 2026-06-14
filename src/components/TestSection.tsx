@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useAppDispatch } from '@/lib/store';
 import { TestLog, formatDate } from '@/lib/types';
+import DateInput from './DateInput';
 
 interface TestSectionProps {
   patientId: string;
@@ -13,8 +14,6 @@ interface TestSectionProps {
 
 export default function TestSection({ patientId, testType, tests, inputId }: TestSectionProps) {
   const dispatch = useAppDispatch();
-  const [dateValue, setDateValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const title = testType === 'lab' ? 'Tes Lab' : 'Tes USG';
   const icon =
@@ -30,11 +29,8 @@ export default function TestSection({ patientId, testType, tests, inputId }: Tes
 
   const pendingCount = tests.filter((t) => t.status === 'pending').length;
 
-  const handleAddTest = () => {
-    if (!dateValue) return;
-    dispatch({ type: 'ADD_TEST', payload: { patientId, testType, date: dateValue } });
-    setDateValue('');
-    inputRef.current?.focus();
+  const handleAddTest = (date: string) => {
+    dispatch({ type: 'ADD_TEST', payload: { patientId, testType, date } });
   };
 
   const handleRemoveTest = (testId: string) => {
@@ -65,27 +61,8 @@ export default function TestSection({ patientId, testType, tests, inputId }: Tes
       {/* Add Input */}
       <div className="border-b border-slate-100 px-5 py-3">
         <div className="flex gap-2">
-          <input
-            ref={inputRef}
-            id={inputId}
-            type="date"
-            value={dateValue}
-            onChange={(e) => setDateValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddTest();
-              }
-            }}
-            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition-colors focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          <button
-            onClick={handleAddTest}
-            disabled={!dateValue}
-            className="flex-shrink-0 rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Tambah
-          </button>
+          <DateInput id={inputId} onSubmit={handleAddTest} />
+          <span className="flex-shrink-0 self-center text-[10px] text-slate-400">Enter ↵</span>
         </div>
       </div>
 

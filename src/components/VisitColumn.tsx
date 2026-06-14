@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { useAppDispatch } from '@/lib/store';
 import { Visit, formatDate } from '@/lib/types';
+import DateInput from './DateInput';
 
 interface VisitColumnProps {
   patientId: string;
@@ -13,19 +14,14 @@ interface VisitColumnProps {
 
 export default function VisitColumn({ patientId, column, visits, inputId }: VisitColumnProps) {
   const dispatch = useAppDispatch();
-  const [dateValue, setDateValue] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const title = column === 'ki' ? 'Kunjungan KI' : 'Kunjungan KIA';
   const subtitle = column === 'ki' ? 'Kesehatan Ibu' : 'Kesehatan Ibu & Anak';
   const pendingCount = visits.filter((v) => v.status === 'pending').length;
   const enteredCount = visits.filter((v) => v.status === 'entered').length;
 
-  const handleAddVisit = () => {
-    if (!dateValue) return;
-    dispatch({ type: 'ADD_VISIT', payload: { patientId, column, date: dateValue } });
-    setDateValue('');
-    inputRef.current?.focus();
+  const handleAddVisit = (date: string) => {
+    dispatch({ type: 'ADD_VISIT', payload: { patientId, column, date } });
   };
 
   const handleRemoveVisit = (visitId: string) => {
@@ -69,27 +65,8 @@ export default function VisitColumn({ patientId, column, visits, inputId }: Visi
           Tambah Tanggal Kunjungan
         </label>
         <div className="flex gap-2">
-          <input
-            ref={inputRef}
-            id={inputId}
-            type="date"
-            value={dateValue}
-            onChange={(e) => setDateValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                handleAddVisit();
-              }
-            }}
-            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 transition-colors focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          <button
-            onClick={handleAddVisit}
-            disabled={!dateValue}
-            className="flex-shrink-0 rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Tambah
-          </button>
+          <DateInput id={inputId} onSubmit={handleAddVisit} />
+          <span className="flex-shrink-0 self-center text-[10px] text-slate-400">Enter ↵</span>
         </div>
       </div>
 
